@@ -1,0 +1,26 @@
+{
+  "name": "px-guard",
+  "version": "1.0.0",
+  "description": "Discord guard bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HIMURAw/PX-Guard.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HIMURAw/PX-Guard/issues"
+  },
+  "homepage": "https://github.com/HIMURAw/PX-Guard#readme",
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "discord.js": "^14.21.0",
+    "dotenv": "^17.2.1",
+    "mongoose": "^8.16.5"
+  }
+}
