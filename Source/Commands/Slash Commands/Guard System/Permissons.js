@@ -6,11 +6,11 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName("permissions")
+        .setName("yetki")
         .setDescription("Kullanıcının bot üzerindeki yetkilerini düzenlersiniz.")
         .addSubcommand((subcommand) =>
             subcommand
-                .setName("user")
+                .setName("kullanici-ver")
                 .setDescription("Belirtilen kullanıcının bot üzerinden izinlerini görüntülersiniz.")
                 .addUserOption((option) =>
                     option
@@ -21,7 +21,7 @@ module.exports = {
         )
         .addSubcommand((subcommand) =>
             subcommand
-                .setName("role")
+                .setName("rol-ver")
                 .setDescription("Belirtilen rolün bot üzerinden izinlerini görüntülersiniz.")
                 .addRoleOption((option) =>
                     option
@@ -32,7 +32,7 @@ module.exports = {
         )
         .addSubcommand((subcommand) =>
             subcommand
-                .setName("liste")
+                .setName("listele")
                 .setDescription("İzinli rolleri ve kullanıcıları görüntülersiniz.")
         ),
     async execute(interaction, bot) {

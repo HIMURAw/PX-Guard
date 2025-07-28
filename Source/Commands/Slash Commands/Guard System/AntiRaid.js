@@ -6,7 +6,7 @@ const { emotes } = require("../../../../config.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("anti-raid")
+    .setName("güvenilir")
     .setDescription("Anti raid sisteminden etkilenmemesi için bota izin verirsiniz.")
     .addSubcommand((subcommand) =>
       subcommand
@@ -35,9 +35,9 @@ module.exports = {
         .setName("bot-liste")
         .setDescription("Sisteme eklenen botları görüntülersiniz.")
     ),
-  name: "Anti Raid",
-  usage: "/anti-raid",
-  description: "Anti raid komutu.",
+  name: "güvenilir",
+  usage: "/güvenilir",
+  description: "güvenilir komutu.",
   async execute(interaction, bot) {
     if (interaction.user.id === interaction.guild.ownerId) {
       const guildFind = await guildModel.findOne({ guildID: interaction.guild.id });
