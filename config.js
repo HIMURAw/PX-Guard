@@ -76,7 +76,7 @@ module.exports = {
 
     bots_config: {
         guard_system: {
-            mongoURL: "mongodb://127.0.0.1:27017/FivemDB",
+            mongoURL: "mongodb://127.0.0.1:27017/pxguard",
             playings: ["PXDev 🎮"],
 
             prefixs: ["!"],
