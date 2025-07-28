@@ -57,6 +57,11 @@ module.exports = {
         server_limit: { limit: 3 },
         // Sunucuyla ilgili büyük değişikliklerde (örneğin sunucu adı, icon değişikliği gibi) tetiklenen limit.
         // Sunucu ayarlarının kötü niyetli kişilerce değiştirilmesini engell
+        spamMessageSize: 7, // KULLANICI XX SANİYEDE XX MESAJ ATARSA SPAM ENGEL MESAJ SAYISI
+        spamTime: 3000, // KULLANICI XX SANİYEDE XX MESAJ ATARSA SPAM ENGEL SÜRESİ ( 1000 ms => 1 saniye )
+
+        shortBadwords: ["amk", "aq", "oç", "sik", "am"], //["amk", "aq", "oç", "sik", "am"],
+        badwords: ["fuck", "bitch", "dick", "d1ck", "pussy", "b1tch", "b!tch", "blowjob", "orspu", "amk çocu", "skiyim", "sikim ", "orospu", "orospu çocuğu", "orspu çocu", "göt", "zenci", "avrad ", "avrat", "köpek", "oevladı", "o.evladı", "Sikiş", "sikis", "sikş", "yarrak", "skerim", "sīkerim", "síkerm", "síkerim", "sįkerim", "sįkerįm", "sīkerīm", "skerīm", "síkerím", "sík", "sįk ", "sīk", "sïk", "sîk", "amcık", "amcik", "aminakoyim", "amınakoyim", "amnakoyim", "aminakoyım"], //["fuck", "bitch", "dick", "d1ck", "pussy", "b1tch", "b!tch", "blowjob", "orspu", "amk çocu", "skiyim", "sikim ", "orospu", "orospu çocuğu", "orspu çocu", "göt", "zenci", "avrad ", "avrat", "köpek", "oevladı", "o.evladı", "Sikiş", "sikis", "sikş", "yarrak", "skerim", "sīkerim", "síkerm", "síkerim", "sįkerim", "sįkerįm", "sīkerīm", "skerīm", "síkerím", "sík", "sįk ", "sīk", "sïk", "sîk", "amcık", "amcik", "aminakoyim", "amınakoyim", "amnakoyim", "aminakoyım"],
     },
     logs: {
 
