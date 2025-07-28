@@ -14,6 +14,15 @@ const client = new Client({
     partials: [Partials.Message, Partials.Channel, Partials.Reaction]
 });
 
+// Handlers Route
+const commandHandler = require('./src/handlers/commandHandler.js');
+const eventHandler = require('./src/handlers/eventHandler.js');
+
+// Load handlers
+commandHandler(client);
+eventHandler(client);
+
+
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.displayName}!`);
 });
