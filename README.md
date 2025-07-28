@@ -35,8 +35,8 @@
 
 1. Depoyu klonlayın:
    ```bash
-   git clone https://github.com/kullaniciadi/px-guard.git
-   cd px-guard
+   git clone https://github.com/HIMURAw/PX-Guard.git
+   cd PX-Guard
 
 2. Config.js dosyasını düzenleyin.
 3. start.bat dosyasını çalıştırın.
