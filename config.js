@@ -6,10 +6,10 @@ module.exports = {
         inviteURL: "https://discord.gg/pxdev"
     },
     discord: {
-        token: "MTI1NjI2MTA0NTU3NjUzNjA4NQ.GfYwz7.BE8CH3IbE_ho5prjQu83afC6ADE8hcdhMi7-TQ",
-        guards_token: ["MTMxNzkyNTAwOTI4NDY2MTQxMQ.GrzV-A.iJGfeUAZhfnTb3LEDx2DLg-qtdwfe5SYxnFoSA", "MTI1NzQzODA0NzU0MTEzNzQ2OQ.GTSlA3.s6OT8KFepWWnWRiOwL24cB8MNTiuwYsQeQC0SM"],
-        serverId: "1399434662706679958",
-        voiceID: "1399434663373705310"
+        token: ".........................................................",
+        guards_token: [".................................................", "........................................................."],
+        serverId: "...................",
+        voiceID: "................."
     },
     guard_config: {
         punishmentsType: {
@@ -22,11 +22,11 @@ module.exports = {
             // Bu rol, kullanıcının diğer tüm yetkilerini engellemelidir.
         },
 
-        logChannelWebHook: "https://discord.com/api/webhooks/1399445444303519866/PCyr6PSyrIZforQNAYmY8khdvbUxEtiuuEpiEl7yXuAjSQbFlgM6kXHdKkr6GVWVNN5D",
+        logChannelWebHook: "https://discord.com/api/webhooks/...",
         // Botun algıladığı tüm güvenlik ihlallerini detaylı şekilde göndereceği Webhook bağlantısı.
         // Log mesajları bu webhook üzerinden belirli bir kanala embed olarak gider.
 
-        dailyInfoLogChannelID: "1399434783360286871",
+        dailyInfoLogChannelID: "...................",
         // Botun günlük istatistik, durum veya özet bilgi mesajlarını göndereceği kanalın ID'si.
         // Örn: kaç saldırı engellendi, kaç kullanıcı cezalandırıldı gibi bilgiler burada paylaşılır.
 
@@ -80,7 +80,7 @@ module.exports = {
             playings: ["PXDev 🎮"],
 
             prefixs: ["!"],
-            ownersId: ["768372430631731210"],
+            ownersId: ["......................"],
             developersID: ["768372430631731210"],
         },
     }
