@@ -39,7 +39,7 @@ module.exports = {
         if (await bot.checkPermissions(["BOT_ALLOW_PERMISSIONS"], interaction, interaction.user.id, true, true)) return;
 
         let subcom = interaction.options.getSubcommand()
-        if (subcom == "user") {
+        if (subcom == "kullanici-ver") {
             let user = interaction.options.getMember("user")
             if (!user) {
                 let error = new EmbedBuilder()
@@ -279,7 +279,7 @@ module.exports = {
                 })
         }
 
-        if (subcom == "role") {
+        if (subcom == "rol-ver") {
             let role = interaction.options.getRole("role")
             if (!role) {
                 let error = new EmbedBuilder()
@@ -519,7 +519,7 @@ module.exports = {
                 })
         }
 
-        if (subcom == "liste") {
+        if (subcom == "listele") {
             await interaction
                 .deferReply({ flags: 64 })
                 .catch(() => { });
