@@ -40,3 +40,12 @@
 
 2. Config.js dosyasını düzenleyin.
 3. start.bat dosyasını çalıştırın.
+
+
+## 📜 Destek ve Katkı
+
+ Discord sayfası için [buraya tıklayın](https://discord.gg/pxdev)
+
+
+## Görsel
+![Discord Logo](https://cdn.discordapp.com/attachments/1392478452636192838/1399473068941774929/image.png?ex=6889205c&is=6887cedc&hm=399b17790c1d6e32184bc71cdbd2d4777bdd335b935e38eec541670870eccad4&)
