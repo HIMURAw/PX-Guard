@@ -15,7 +15,7 @@ IF %ERRORLEVEL% NEQ 0 (
 :: node_modules klasörü var mı?
 IF NOT EXIST node_modules (
     echo Gerekli paketler yükleniyor...
-    npm install discord.js @discordjs/voice advanced-logs chalk chillout cron dotenv moment, mongoose
+    npm install discord.js @discordjs/voice advanced-logs chalk chillout cron dotenv moment mongoose
 ) ELSE (
     echo Paketler zaten yuklu, atlanıyor...
 )
