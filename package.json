@@ -18,9 +18,14 @@
   },
   "homepage": "https://github.com/HIMURAw/PX-Guard#readme",
   "dependencies": {
+    "@discordjs/voice": "^0.18.0",
+    "advanced-logs": "^2.1.3",
     "chalk": "^5.4.1",
+    "chillout": "^5.0.0",
+    "cron": "^4.3.2",
     "discord.js": "^14.21.0",
     "dotenv": "^17.2.1",
+    "moment": "^2.30.1",
     "mongoose": "^8.16.5"
   }
 }
