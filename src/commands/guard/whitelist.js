@@ -1,5 +1,3 @@
-
-
 module.exports = {
     name: "whitelist",
     description: "Kullanıcıyı guard sisteminden muaf tutar.",
