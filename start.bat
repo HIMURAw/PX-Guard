@@ -17,7 +17,7 @@ IF NOT EXIST node_modules (
     echo Gerekli paketler yükleniyor...
     npm install discord.js @discordjs/voice advanced-logs chalk chillout cron dotenv moment mongoose
 ) ELSE (
-    echo Paketler zaten yuklu, atlanıyor...
+    echo Paketler zaten yüklü, atlanıyor...
 )
 
 :: index.js var mı?
@@ -26,7 +26,6 @@ IF EXIST index.js (
     node index.js
 ) ELSE (
     echo index.js bulunamadı! Lütfen bot dosyasının dizininde olduğundan emin ol.
-    pause
 )
 
 pause
