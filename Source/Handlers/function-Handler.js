@@ -23,27 +23,42 @@ bot.dailyInfo = async function () {
       if (guild) {
         if (datas.length > 0) {
           if (log) {
-            let dataArray = chunkArray(datas, 5);
-            let embed = new EmbedBuilder()
-              .setTitle(`${emotes.safe} Günlük Koruma Verileri`)
-              .setDescription(`> Bugün toplam __**${datas.length} tane**__ izinsiz işlem engellendi. Bu işlemleri yapan yetkililerden sadece __**${datas.filter((x) => x.jail).length} tanesi**__ ceza aldı. Merak etmeyin sunucu bana emanet. 🫡`)
-              .addFields(dataArray
-                .map((x, index) => ({
-                  name: `(${Number(Number(index++) + 1) * x.length}/${datas.length}) Günlük Veriler ↷`,
+            const dataArray = chunkArray(datas, 5);
+            const totalPages = Math.ceil(dataArray.length / 5); // Split into chunks of 5 fields per embed
+            const embeds = [];
+            
+            for (let i = 0; i < dataArray.length; i += 5) {
+              const chunk = dataArray.slice(i, i + 5);
+              const embed = new EmbedBuilder()
+                .setTitle(`${emotes.safe} Günlük Koruma Verileri (Sayfa ${Math.floor(i/5) + 1}/${totalPages})`)
+                .setDescription(`> Bugün toplam __**${datas.length} tane**__ izinsiz işlem engellendi. Bu işlemleri yapan yetkililerden sadece __**${datas.filter((x) => x.jail).length} tanesi**__ ceza aldı.`)
+                .setThumbnail(guild.iconURL({ dynamic: true }))
+                .setColor("Aqua");
+
+              chunk.forEach((x, index) => {
+                embed.addFields({
+                  name: `Grup ${i + index + 1} (${(i + index + 1) * x.length}/${datas.length})`,
                   value: x
                     .map((x) => `**╰** Kullanıcı: <@!${x.userID}> ${x.jail ? `__**CEZALANDIRILMIŞ!**__ ${emotes.uyarı}` : ""}\n**╰** Yapılan İşlem: **${x.type}**\n**╰** İşlem Zamanı: **<t:${Math.floor(x.time / 1000)}:f>**`)
                     .join("\n\n")
-                })))
-              .setThumbnail(guild.iconURL({ dynamic: true }))
-              .setColor("Aqua")
+                });
+              });
+              
+              embeds.push(embed);
+            }
 
-            log
-              ?.send({ embeds: [embed] })
-              .then(async () => await guildModel
-                .updateMany({ guildID: guild.id }, { infos: [] }, { upsert: true })
-                .then(async () => await userModel
-                  .deleteMany({ guildID: guild.id })))
-              .catch(() => { })
+            // Send all embeds
+            embeds.forEach((embed, index) => {
+              setTimeout(() => {
+                log.send({ embeds: [embed] }).catch(console.error);
+              }, index * 1000); // 1 second delay between embeds
+            });
+
+            // Clear the data after sending
+            guildModel
+              .updateMany({ guildID: guild.id }, { infos: [] }, { upsert: true })
+              .then(() => userModel.deleteMany({ guildID: guild.id }))
+              .catch(console.error);
           }
         } else {
           if (log) {
