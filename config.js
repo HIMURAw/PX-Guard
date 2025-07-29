@@ -1,4 +1,7 @@
 module.exports = {
+    server_config: {
+        permissions: ["704100895809470524", "768372430631731210"],
+    },
     genel_config: {
         description: `\`📌\` **Discord:** https://discord.gg/pxguard
                       \`🔗\` **Site:** \`https://pixeldev.com.tr>\` 
@@ -67,16 +70,16 @@ module.exports = {
 
     },
     emotes: {
-        başarılı: "<a:basarili:1374082639434350673>",
-        başarısız: "<a:basarisiz:1374082641929834658>",
-        uyarı: "<a:uyari:1374082651367014560>",
-        yükleniyor: "<a:yukleniyor:1374082653497852104>",
-        tosun: "<a:tosun:1374082648737316994>",
-        safe: "<a:safe:1374082647227236552>",
-        mavikelebek: "<a:mavikelebek:1374082644094091525>",
-        db: "<:mongodb:1374082645818085598>",
-        ban: "<:ban:1374082637572079766>",
-        fivem: "<a:mavikelebek:1374082644094091525>"
+        başarılı: "✅",
+        başarısız: "❌",
+        uyarı: "⚠️",
+        yükleniyor: "🔄",
+        tosun: "🐷",
+        safe: "🛡️",
+        mavikelebek: "🦋",
+        db: "💾",
+        ban: "🔨",
+        fivem: "🎮"
     },
 
     bots_config: {

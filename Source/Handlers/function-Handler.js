@@ -71,6 +71,7 @@ bot.dailyInfo = async function () {
 }
 
 bot.checkPermissions = async function checkPermissions(permissions, interaction, user, checkMsg, flags) {
+  permissions = permissions || [];
   let permissionsFind = await permissionsModel.find({ guildID: interaction.guild.id })
   let checkUserFind = permissionsFind ? permissionsFind
     ?.filter((x) => x?.userID ? true : false)
@@ -159,11 +160,12 @@ bot.checkPermissions = async function checkPermissions(permissions, interaction,
 }
 
 bot.checkUser = async function checkUser(permissions, guild, user) {
+  permissions = permissions || [];
   let permissionsFind = await permissionsModel.find({ guildID: guild.id })
   let checkUserFind = permissionsFind ? permissionsFind
     ?.filter((x) => x?.userID ? true : false)
-    ?.find((x) => x?.userID == user) || [] : []
-  let checkUserData = checkUserFind ? checkUserFind?.permissions?.map((x) => x) || [] : []
+    ?.find((x) => x?.userID == user) || { permissions: [] } : { permissions: [] };
+  let checkUserData = (checkUserFind && Array.isArray(checkUserFind.permissions)) ? checkUserFind.permissions.map((x) => x) : [];
   let checkPerms = checkUserData
     ?.filter((x) => x.type == "guard")
     ?.map((x) => x)
@@ -180,15 +182,15 @@ bot.checkUser = async function checkUser(permissions, guild, user) {
   let bots = global.bots
   let member = guild.members.cache.get(user)
 
-  if (!bots_config.guard_system.developersID.some((x) => x == user)) {
-    if (!bots_config.guard_system.ownersId.some((x) => x == user)) {
-      if (!server_config.permissions.some((x) => x == user)) {
+  if (!(Array.isArray(bots_config.guard_system.developersID) && bots_config.guard_system.developersID.some((x) => x == user))) {
+    if (!(Array.isArray(bots_config.guard_system.ownersId) && bots_config.guard_system.ownersId.some((x) => x == user))) {
+      if (!(Array.isArray(server_config.permissions) && server_config.permissions.some((x) => x == user))) {
         if (guild?.ownerId !== user) {
-          if (!bots.some((x) => x?.user?.id == user)) {
-            if (!checkPerms.some((perms) => perms?.id == "FULL")) {
-              if (!permissions.some((x) => checkPerms.some((perms) => perms?.id == x))) {
-                if (member ? !checkRolePerms.filter((perms) => perms?.id == "FULL").some((perms) => member?.roles?.cache.get(perms?.roleID)) : true) {
-                  if (member ? !permissions.some((x) => checkRolePerms.filter((perms) => perms?.id == x).some((perms) => member?.roles?.cache.get(perms?.roleID))) : true) {
+          if (!(Array.isArray(bots) && bots.some((x) => x?.user?.id == user))) {
+            if (!(Array.isArray(checkPerms) && checkPerms.some((perms) => perms?.id == "FULL"))) {
+              if (!(Array.isArray(permissions) && permissions.some((x) => Array.isArray(checkPerms) && checkPerms.some((perms) => perms?.id == x)))) {
+                if (member ? !(Array.isArray(checkRolePerms) && checkRolePerms.filter((perms) => perms?.id == "FULL").some((perms) => member?.roles?.cache.get(perms?.roleID))) : true) {
+                  if (member ? !(Array.isArray(permissions) && permissions.some((x) => Array.isArray(checkRolePerms) && checkRolePerms.filter((perms) => perms?.id == x).some((perms) => member?.roles?.cache.get(perms?.roleID)))) : true) {
                     return false;
                   } else {
                     return "whitelist";
