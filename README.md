@@ -76,13 +76,7 @@
    npm install
    ```
 
-3. Copy the example config file and update it with your details:
-   ```bash
-   cp config.example.js config.js
-   ```
-   Then edit the `config.js` file with your bot token and settings.
-
-4. Start the bot:
+3. Start the bot:
    ```bash
    node .
    # or using PM2 (recommended for production)
@@ -113,8 +107,7 @@ module.exports = {
 
 ## 📸 Preview
 
-![Dashboard Preview](https://cdn.discordapp.com/attachments/1392478452636192838/1399473068941774929/image.png)
-*Figure 1: PX-Guard Dashboard*
+![Dashboard Preview](https://cdn.discordapp.com/attachments/1392478452636192838/1399473068941774929/image.png?ex=688dbd9c&is=688c6c1c&hm=503b8488d1d77f4f6a73914cb1197e8942cc28631743d8008e31157fbe5dafa7&)
 
 ## 🤝 Contributing
 
