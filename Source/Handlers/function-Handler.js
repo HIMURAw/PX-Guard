@@ -1,4 +1,4 @@
-const { guard_config: { logChannelWebHook, dailyInfoLogChannelID, punishmentsType }, guard_config, emotes, server_config } = require("../../config.js");
+const { guard_config: { logChannelWebHook, dailyInfoLogChannelID, punishmentsType }, guard_config, emotes, server_config } = require("drizzle-orm");
 const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, Colors, ButtonStyle, escapeBold, WebhookClient } = require("discord.js")
 const { bots_config: { guard_system: { ownersId } }, genel_config, bots_config } = require("../../config.js");
 const permissionsModel = require("../Models/PermissionsSchema");
@@ -26,11 +26,11 @@ bot.dailyInfo = async function () {
             const dataArray = chunkArray(datas, 5);
             const totalPages = Math.ceil(dataArray.length / 5); // Split into chunks of 5 fields per embed
             const embeds = [];
-            
+
             for (let i = 0; i < dataArray.length; i += 5) {
               const chunk = dataArray.slice(i, i + 5);
               const embed = new EmbedBuilder()
-                .setTitle(`${emotes.safe} Günlük Koruma Verileri (Sayfa ${Math.floor(i/5) + 1}/${totalPages})`)
+                .setTitle(`${emotes.safe} Günlük Koruma Verileri (Sayfa ${Math.floor(i / 5) + 1}/${totalPages})`)
                 .setDescription(`> Bugün toplam __**${datas.length} tane**__ izinsiz işlem engellendi. Bu işlemleri yapan yetkililerden sadece __**${datas.filter((x) => x.jail).length} tanesi**__ ceza aldı.`)
                 .setThumbnail(guild.iconURL({ dynamic: true }))
                 .setColor("Aqua");
@@ -43,7 +43,7 @@ bot.dailyInfo = async function () {
                     .join("\n\n")
                 });
               });
-              
+
               embeds.push(embed);
             }
 
@@ -327,7 +327,7 @@ bot.extractValues = function extractValues(obj = config, parentKey = "", seen = 
 }
 
 bot.updateConfigValueByValue = function updateConfigValueByValue(oldValue, newValue) {
-  let filePath = path.join(__dirname, `../../../../config.js`);
+  let filePath = path.join(__dirname, `../../config.js`);
   let configContent = fs.readFileSync(filePath, 'utf8');
 
   const regex = new RegExp(`(['"])(?:(?=(\\\\?))\\2.)*?\\b${oldValue}\\b(?:(?=(\\\\?))\\2.)*?\\1`, 'g');
