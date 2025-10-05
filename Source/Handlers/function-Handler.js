@@ -1,6 +1,7 @@
-const { guard_config: { logChannelWebHook, dailyInfoLogChannelID, punishmentsType }, guard_config, emotes, server_config } = require("drizzle-orm");
+const { guard_config: { logChannelWebHook, dailyInfoLogChannelID, punishmentsType }, guard_config, emotes, server_config } = require("../../config.js");
 const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, Colors, ButtonStyle, escapeBold, WebhookClient } = require("discord.js")
 const { bots_config: { guard_system: { ownersId } }, genel_config, bots_config } = require("../../config.js");
+const config = require("../../config.js");
 const permissionsModel = require("../Models/PermissionsSchema");
 const guildModel = require("../Models/guildSchema");
 const userModel = require("../Models/userSchema");
@@ -26,11 +27,11 @@ bot.dailyInfo = async function () {
             const dataArray = chunkArray(datas, 5);
             const totalPages = Math.ceil(dataArray.length / 5); // Split into chunks of 5 fields per embed
             const embeds = [];
-
+            
             for (let i = 0; i < dataArray.length; i += 5) {
               const chunk = dataArray.slice(i, i + 5);
               const embed = new EmbedBuilder()
-                .setTitle(`${emotes.safe} Günlük Koruma Verileri (Sayfa ${Math.floor(i / 5) + 1}/${totalPages})`)
+                .setTitle(`${emotes.safe} Günlük Koruma Verileri (Sayfa ${Math.floor(i/5) + 1}/${totalPages})`)
                 .setDescription(`> Bugün toplam __**${datas.length} tane**__ izinsiz işlem engellendi. Bu işlemleri yapan yetkililerden sadece __**${datas.filter((x) => x.jail).length} tanesi**__ ceza aldı.`)
                 .setThumbnail(guild.iconURL({ dynamic: true }))
                 .setColor("Aqua");
@@ -43,7 +44,7 @@ bot.dailyInfo = async function () {
                     .join("\n\n")
                 });
               });
-
+              
               embeds.push(embed);
             }
 
@@ -123,9 +124,7 @@ bot.checkPermissions = async function checkPermissions(permissions, interaction,
 
       await interaction
         ?.reply({ embeds: [error], components: [new ActionRowBuilder({ components: [button1, button2] })], flags: flags })
-        .then((msg) => setTimeout(() => msg
-          ?.delete()
-          ?.catch(() => { }), 1000 * 60 * 1))
+        .then((msg) => setTimeout(() => msg?.delete()?.catch(() => { }), 1000 * 60 * 1))
         .catch(() => { })
     }
 
@@ -256,6 +255,9 @@ bot.ban = async function ban(type, guildId) {
   if (guild) {
     let member = guild.members.cache.get(type?.id)
     if (member) {
+      // Prepare timestamp string once for all punishment types
+      const now = Date.now() + Number(1000 * 60 * 60 * 3);
+      const time = `${moment.utc(now).format("D")} ${bot.moons[moment.utc(now).format("MM")]} ${moment.utc(now).format("YYYY")} ${moment.utc(now).format("HH:mm")}`
       if (punishmentsType.type == "jail") {
         member?.roles.cache
           ?.map((x) => member?.roles
@@ -266,7 +268,6 @@ bot.ban = async function ban(type, guildId) {
           ?.add(punishmentsType.roleId)
           .catch(() => { })
       } else if (punishmentsType.type == "ban") {
-        let time = `${moment.utc(Date.now() + Number(1000 * 60 * 60 * 3)).format("D") + ` ${bot.moons[moment.utc(Date.now() + Number(1000 * 60 * 60 * 3)).format("MM")]} ` + moment.utc(Date.now() + Number(1000 * 60 * 60 * 3)).format("YYYY")} ${moment.utc(Date.now() + Number(1000 * 60 * 60 * 3)).format("HH:mm")}`
         guild.members
           .ban(member.user.id, { reason: `Reason: Koruma Limiti Aşıldı | Staff: ${bot.user.tag} | Date: ${time}` })
           .catch(() => member?.roles.cache
@@ -343,6 +344,6 @@ bot.updateConfigValueByValue = function updateConfigValueByValue(oldValue, newVa
     return require(filePath);
   }
 
-  if (configContent !== updatedContent) return true
-  else if (configContent === updatedContent) return false;
+  if (configContent !== updatedContent) return true;
+  return false;
 }

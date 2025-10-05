@@ -12,6 +12,8 @@ module.exports = async (channel) => {
     .catch(() => { })
 
   if (!entry || entry.createdTimestamp <= Date.now() - 10000) return;
+  // If the channel was created by a bot (e.g., our guard restoring a deleted channel), do not delete it.
+  if (entry.executor?.bot) return;
   let limit = Number(channel_limit.create * 2);
   let whitelist_check = await bot.checkUser(["CHANNEL_CREATE"], guild, entry.executor.id)
   if (whitelist_check) {

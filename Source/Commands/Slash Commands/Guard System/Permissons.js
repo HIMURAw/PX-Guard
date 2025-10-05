@@ -279,7 +279,7 @@ module.exports = {
                 })
         }
 
-        if (subcom == "rol-ver") {
+     if (subcom == "rol-ver") {
             let role = interaction.options.getRole("role")
             if (!role) {
                 let error = new EmbedBuilder()

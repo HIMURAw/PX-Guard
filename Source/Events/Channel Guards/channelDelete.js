@@ -5,18 +5,48 @@ const guildModel = require("../../Models/guildSchema");
 const userModel = require("../../Models/userSchema");
 const config = require("../../../config.js")
 const bot = global.guard;
+const recentlyRestored = new Set();
+const restoringByKey = new Set();
 
 module.exports = async (channel) => {
   const guild = channel.guild;
   const entry = await guild
-    .fetchAuditLogs({ type: 12, limit: 1 })
-    .then((x) => x.entries.first());
+    .fetchAuditLogs({ type: AuditLogEvent.ChannelDelete, limit: 1 })
+    .then((x) => x.entries.first())
+    .catch(() => { });
 
   if (!entry || entry.createdTimestamp <= Date.now() - 10000) return;
   if (await bot.checkUser(["CHANNEL_DELETE"], guild, entry.executor.id)) return;
+  // Debounce to avoid double-restore if the event fires twice quickly
+  if (recentlyRestored.has(channel.id)) return;
+  recentlyRestored.add(channel.id);
+  setTimeout(() => recentlyRestored.delete(channel.id), 5000);
+
+  // Prevent concurrent duplicate restores using a composite key
+  const restoreKey = `${guild.id}:${channel.name}:${channel.parentId || 'root'}`;
+  if (restoringByKey.has(restoreKey)) return;
+  restoringByKey.add(restoreKey);
+  setTimeout(() => restoringByKey.delete(restoreKey), 10000);
+
+  // If a channel with the same name and parent already exists, do not clone again (fetch fresh list)
+  const channels = await guild.channels.fetch().catch(() => guild.channels.cache);
+  const existsSame = Array.from(channels.values ? channels.values() : channels)
+    .some((c) => c && c.name === channel.name && c.parentId === channel.parentId);
+  if (existsSame) return;
+
+  // Safety: If our bot already created a channel with same name/parent very recently, skip
+  try {
+    const createdLogs = await guild.fetchAuditLogs({ type: AuditLogEvent.ChannelCreate, limit: 5 });
+    const recentBotCreate = createdLogs.entries.find((e) =>
+      e.executor && e.executor.id === bot.user.id &&
+      e.target && e.target.name === channel.name &&
+      e.createdTimestamp > Date.now() - 10000 // last 10s
+    );
+    if (recentBotCreate) return;
+  } catch (_) { }
 
   channel
-    .clone({ name: channel.name, permissions: channel.withPermissions, topic: channel.topic, bitrate: this.bitrate })
+    .clone({ name: channel.name, reason: "PX-Guard: Kanal silme geri yükleme" })
     .then(async (newChannel) => {
       await bot
         .updateConfigValueByValue(channel.id, newChannel.id);
