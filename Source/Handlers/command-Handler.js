@@ -2,8 +2,9 @@ const { Routes } = require("discord-api-types/v10");
 const { REST } = require("@discordjs/rest");
 const moment = require("moment");
 const fs = require("fs");
-const bot = global.guard;
+const { discord: { token } } = require("../../config");
 
+const bot = global.guard;
 const commands = [];
 fs.readdirSync(`${__dirname}/../Commands/Slash Commands/`).forEach((folder) => {
   const commandFiles = fs
@@ -20,7 +21,7 @@ fs.readdirSync(`${__dirname}/../Commands/Slash Commands/`).forEach((folder) => {
 bot.on("ready", () => {
   const CLIENT_ID = bot.user.id;
 
-  const rest = new REST({ version: "10" }).setToken(bot.token);
+  const rest = new REST({ version: "10" }).setToken(token);
   (async () => {
     try {
       await rest.put(Routes.applicationCommands(CLIENT_ID), { body: commands });

@@ -1,142 +1,119 @@
 <div align="center">
-  <h1>🚨 PX-Guard | Discord Anti-Raid & Authorization Bot</h1>
-  
-  [![Discord](https://img.shields.io/discord/your-server-id?color=7289DA&label=Discord&logo=discord&logoColor=white)](https://discord.gg/pxdev)
-  [![GitHub license](https://img.shields.io/github/license/HIMURAw/PX-Guard?color=blue)](LICENSE)
-  [![GitHub stars](https://img.shields.io/github/stars/HIMURAw/PX-Guard?style=social)](https://github.com/HIMURAw/PX-Guard/stargazers)
-  [![Discord.js](https://img.shields.io/badge/discord.js-v14-7289DA?logo=discord&logoColor=white)](https://discord.js.org/)
-  
-  **PX-Guard** is a powerful anti-raid and user authorization bot designed to protect your Discord server. It prevents unauthorized access attempts, detects suspicious activities, and provides authorization systems to make administrators' jobs easier.
-  
-  [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/HIMURAw/PX-Guard)
-  [![Invite to Server](https://img.shields.io/badge/Invite-PX--Guard-7289DA?style=for-the-badge&logo=discord)](https://discord.com/oauth2/authorize?client_id=YOUR_BOT_ID&permissions=8&scope=bot%20applications.commands)
+  <h1>🛡️ PX-Guard | Gelişmiş Sunucu Koruma ve Log Botu</h1>
+
+  [![Discord](https://img.shields.io/discord/1269430268402335867?color=7289DA&label=Destek&logo=discord&logoColor=white)](https://discord.gg/pxdev)
+  [![Node.js](https://img.shields.io/badge/Node.js-v16+-green?logo=node.js&logoColor=white)](https://nodejs.org/)
+  [![Discord.js](https://img.shields.io/badge/Discord.js-v14-blue?logo=discord&logoColor=white)](https://discord.js.org/)
+  [![License](https://img.shields.io/badge/Lisans-MIT-yellow.svg)](LICENSE)
+
+  <p>
+    <strong>PX-Guard</strong>, Discord sunucunuzu kötü niyetli saldırılara, izinsiz işlemlere ve yetki suistimallerine karşı koruyan profesyonel bir güvenlik botudur.
+    Çoklu bot yapısı (Main + Guardlar) ile sunucunuzu saniyeler içinde koruma altına alır.
+  </p>
 
 </div>
 
 ---
 
-## 📑 Table of Contents
-- [✨ Features](#-features)
-- [🚀 Installation](#-installation)
-- [⚙️ Configuration](#️-configuration)
-- [💡 Usage](#-usage)
-- [🔧 Commands](#-commands)
-- [📸 Preview](#-preview)
-- [🤝 Contributing](#-contributing)
-- [📄 License](#-license)
-- [📜 Changelog](CHANGELOG.md)
+## 📑 İçindekiler
+- [🔥 Özellikler](#-özellikler)
+    - [Koruma Sistemi (Guard)](#-koruma-sistemi-guard)
+    - [Log Sistemi](#-log-sistemi)
+- [🚀 Kurulum](#-kurulum)
+- [⚙️ Yapılandırma](#️-yapılandırma)
+- [🔧 Komutlar](#-komutlar)
+- [❓ Sık Karşılaşılan Sorunlar](#-sık-karşılaşılan-sorunlar)
 
 ---
 
-## 🔥 Features
+## 🔥 Özellikler
 
-- **Anti-Raid Protection**
-  - Instantly detects mass joins and spam attacks
-  - Automatically bans or quarantines suspicious users
-  - Locks server settings during raids to prevent damage
+### 🛡️ Koruma Sistemi (Guard)
+Yetkili rollerin yapabileceği işlemleri sınırlar ve limit aşımında otomatik işlem yapar (Ban/Kick/Jail). `config.js` üzerinden limitler ayarlanabilir.
 
-- **User Authorization**
-  - Custom role and permission management
-  - Detailed control for admin, moderator, and other authorized roles
-  - Automatically detects and intervenes in unauthorized actions by users
+- **Kanal Koruması:** Kanal silme/oluşturma/düzenleme limitleri.
+- **Rol Koruması:** Rol silme/oluşturma/düzenleme/yetki verme limitleri.
+- **Emoji/Sticker Koruması:** Emoji silme işlemlerini denetler.
+- **Ban/Kick Koruması:** Sağ tık ban/kick işlemlerini sınırlar (Toplu ban saldırılarını engeller).
+- **Sunucu Koruması:** Sunucu adı, resmi veya URL'sinin değiştirilmesini engeller.
+- **Spam Koruması:** Belirli sürede aşırı mesaj atan kullanıcıları susturur.
+- **Küfür Koruması:** Gelişmiş küfür filtresi (bypass edilebilir listeli).
 
-- **Unauthorized Action Prevention**
-  - Monitors channel, role, message, and membership changes
-  - Automatic alerts and logging for suspicious activities
-  - Approval system for critical operations requiring admin confirmation
+### 📜 Log Sistemi
+Sunucuda olup biten her şeyi detaylıca kayıt altına alır. **Main Bot** bu işlemleri üstlenir.
 
-- **Advanced Logging System**
-  - Logs all suspicious activities in detail
-  - Sends real-time notifications to specified channels
-
-- **Easy Setup and Configuration**
-  - Simple, customizable configuration file
-  - Modern codebase with Discord.js v14 support
+- ✅ **Rol Log:** Rol oluşturma, silme ve güncelleme (Eski/Yeni isim, Renk, ID).
+- 💬 **Mesaj Log:** Silinen ve düzenlenen mesajlar (Eski/Yeni içerik, Yazar, Kanal). *Hafızada olmayan eski mesajları bile "Bilinmeyen İçerik" olarak raporlar.*
+- 🎤 **Ses Log:** Sese giriş, çıkış, mute/unmute, deafen/undeafen işlemleri.
+- 📂 **Kanal Log:** Kanal oluşturma, silme, isim/kategori/izin değişiklikleri.
+- 🔨 **Ban/Kick Log:** Yasaklama ve atılma işlemleri.
+- 👋 **Giriş/Çıkış Log:** Sunucuya gelen ve giden üyeler.
 
 ---
 
-## 🚀 Installation
+## 🚀 Kurulum
 
-### Prerequisites
-- Node.js v16.9.0 or higher
-- npm v7 or higher
-- Discord.js v14
-- A Discord Bot Token from the [Discord Developer Portal](https://discord.com/developers/applications)
-
-### Setup Instructions
-
-1. Clone the repository:
+1. **Projeyi İndirin:**
    ```bash
    git clone https://github.com/HIMURAw/PX-Guard.git
    cd PX-Guard
    ```
 
-2. Install dependencies:
+2. **Gerekli Modülleri Yükleyin:**
    ```bash
    npm install
    ```
 
-3. Start the bot:
+3. **Yapılandırmayı Düzenleyin:**
+   `config.js` dosyasını açın ve token/sunucu bilgilerinizi girin.
+
+4. **Botu Başlatın:**
    ```bash
-   node .
-   # or using PM2 (recommended for production)
-   npm install -g pm2
-   pm2 start index.js --name "px-guard"
+   node index.js
    ```
 
-## ⚙️ Configuration
+---
 
-Edit the `config.js` file with your preferred settings. Here's an example configuration:
+## ⚙️ Yapılandırma (`config.js`)
 
-```javascript
-module.exports = {
-    discord: {
-        token: "Your Discord Bot Token",
-        guards_token: ["Your Discord Bot Token", "Your Discord Bot Token"],
-        serverId: "your discord server id",
-        voiceID: "your discord voice channel id"
-    },
-  // ... other configuration options
-};
-```
+Tüm ayarlar `config.js` dosyasında bulunur.
 
-### Protection Features
-- Automatic raid detection and prevention
-- Role and permission management
-- Suspicious activity monitoring
+| Ayar | Açıklama |
+| :--- | :--- |
+| `discord.token` | Ana (Main) botun tokeni. (Loglama ve genel işler) |
+| `discord.guards_token` | Guard botlarının token listesi. (Sadece koruma yapar) |
+| `guard_config.limit` | Kanal, rol vb. işlemler için izin verilen maksimum sayı (örn: 3). |
+| `guard_config.punishmentsType` | Limit aşımında verilecek ceza (`ban`, `kick`, `jail`). |
+| `bots_logs` | Log kanallarının ID'leri. |
 
-## 📸 Preview
+---
 
-![Dashboard Preview](https://cdn.discordapp.com/attachments/1392478452636192838/1399473068941774929/image.png?ex=688dbd9c&is=688c6c1c&hm=503b8488d1d77f4f6a73914cb1197e8942cc28631743d8008e31157fbe5dafa7&)
+## 🔧 Komutlar
 
-## 🤝 Contributing
+Botun slash (/) komutları mevcuttur.
 
-Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTING.md) for details on how to contribute to this project.
+- **/setup** - Log kanallarını otomatik kurar veya yapılandırır.
+- **/backup** - Sunucu yedeği alır veya yedeği geri yükler.
+- **/whitelist** - Güvenli kullanıcıları (işlem kısıtlamasına takılmayacak kişileri) yönetir. (Ekle/Sil/Liste)
+- **/safeyt** - Güvenli rolleri yönetir.
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+---
 
-### 🐛 Reporting Issues
-Found a bug? Please open an issue on our [GitHub Issues](https://github.com/HIMURAw/PX-Guard/issues) page.
+## ❓ Sık Karşılaşılan Sorunlar
 
-## 📄 License
+### "Loglar 2 kere (veya 4 kere) gönderiliyor!"
+Bu sorun genellikle aynı botun arka planda birden fazla kez çalışmasından kaynaklanır.
+**Çözüm:** Terminali temizleyin veya `taskkill /F /IM node.exe` komutuyla tüm Node işlemlerini kapatıp tekrar başlatın.
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+### "Bot log atmıyor / Hata vermiyor"
+Log kanal ID'lerinin `config.js` dosyasında doğru girildiğinden ve botun o kanalı görme yetkisi olduğundan emin olun.
 
-## 🔗 Links
+### "uncached message" uyarısı nedir?
+Bot yeniden başlatılmadan önce atılmış çok eski mesajlar silinirse bot içeriği bilemez. PX-Guard bu durumda hata vermek yerine "Bilinmeyen İçerik" olarak log atar, sistem çökmez.
 
-- [Support Server](https://discord.gg/pxdev)
-- [GitHub Repository](https://github.com/HIMURAw/PX-Guard)
-
-## 🙏 Acknowledgments
-
-- Built with ❤️ by [HIMURAw](https://github.com/HIMURAw)
-- Thanks to all contributors who helped improve this project
-- Special thanks to the Discord.js team for their amazing library
+---
 
 <div align="center">
-  Made with :heart: and JavaScript
+  <strong>Geliştirici: HIMURAw</strong> <br>
+  Made with ❤️ by PX Developers
 </div>

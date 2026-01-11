@@ -2,7 +2,7 @@ const { EmbedBuilder, MessageButton, MessageActionRow, MessageFlags } = require(
 const { emotes } = require("../../../config.js");
 const bot = global.guard;
 
-module.exports = async (interaction) => {
+module.exports = async (client, interaction) => {
   if (interaction?.isChatInputCommand()) {
     const command = bot.slash_Cmd.get(interaction.commandName)
     if (!command) return;

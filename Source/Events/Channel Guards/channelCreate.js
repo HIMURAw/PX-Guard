@@ -4,7 +4,7 @@ const guildModel = require("../../Models/guildSchema");
 const userModel = require("../../Models/userSchema");
 const bot = global.guard;
 
-module.exports = async (channel) => {
+module.exports = async (client, channel) => {
   const guild = channel.guild;
   const entry = await guild
     .fetchAuditLogs({ type: AuditLogEvent.ChannelCreate, limit: 1 })

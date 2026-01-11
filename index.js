@@ -1,179 +1,200 @@
-const moons = { "01": "Ocak", "02": "Şubat", "03": "Mart", "04": "Nisan", "05": "Mayıs", "06": "Haziran", "07": "Temmuz", "08": "Ağustos", "09": "Eylül", "10": "Ekim", "11": "Kasım", "12": "Aralık" }
-const { bots_config: { guard_system: { mongoURL } }, bots_config: { guard_system: { playings }, } } = require("./config.js");
-const { discord: { token }, discord: { guards_token } } = require("./config.js");
-const { Client, GatewayIntentBits, Partials, Collection } = require('discord.js');
-const { fork } = require("child_process");
-const mongoose = require("mongoose");
-const moment = require("moment")
-const path = require("path");
-require('advanced-logs');
-const { joinVoiceChannel } = require('@discordjs/voice');
-const config = require('./config');
-const voiceChannelIds = config.discord.voiceID;
+// ================== GLOBALS ==================
+require("advanced-logs");
 
-const bot = (global.guard = new Client({ fetchAllMembers: true, allowedMentions: { parse: ["roles", "users", "everyone"], repliedUser: true, }, partials: [Partials.Message, Partials.Channel, Partials.Reaction], intents: 3276799 }));
+const { Client, Partials, GatewayIntentBits, Collection } = require("discord.js");
+const { Logger } = require("term-logger");
+const mongoose = require("mongoose");
+const moment = require("moment");
+const fs = require("fs");
+const path = require("path");
+const { joinVoiceChannel } = require("@discordjs/voice");
+
+// ================== CONFIG ==================
+const {
+  bots_config: {
+    guard_system: { mongoURL, playings },
+  },
+  discord: { token, guards_token, voiceID },
+  genel_config,
+  bots_logs,
+} = require("./config");
+
+// ================== TIME ==================
+const moons = {
+  "01": "Ocak", "02": "Şubat", "03": "Mart", "04": "Nisan",
+  "05": "Mayıs", "06": "Haziran", "07": "Temmuz", "08": "Ağustos",
+  "09": "Eylül", "10": "Ekim", "11": "Kasım", "12": "Aralık",
+};
+
+process.title = "Guard Bot System";
+console.clear();
 console.setConfig({ background: false, timestamp: false });
 
-let time = Date.now() + Number(1000 * 60 * 60 * 3);
-bot.default_Cmd = new Collection();
-let Guards = (global.Guards = []);
+// ================== INTENTS ==================
+const INTENTS = [
+  GatewayIntentBits.Guilds,
+  GatewayIntentBits.GuildMembers,
+  GatewayIntentBits.GuildBans,
+  GatewayIntentBits.GuildEmojisAndStickers,
+  GatewayIntentBits.GuildWebhooks,
+  GatewayIntentBits.GuildInvites,
+  GatewayIntentBits.GuildVoiceStates,
+  GatewayIntentBits.GuildPresences,
+  GatewayIntentBits.GuildMessages,
+  GatewayIntentBits.GuildMessageReactions,
+  GatewayIntentBits.MessageContent,
+];
+
+// ================== EVENT LOADER ==================
+const loadEventsRecursive = (client, dir) => {
+  fs.readdirSync(dir).forEach(file => {
+    const fullPath = path.join(dir, file);
+
+    if (fs.statSync(fullPath).isDirectory()) {
+      loadEventsRecursive(client, fullPath);
+      return;
+    }
+
+    if (!file.endsWith(".js")) return;
+
+    // === BOT TYPE FİLTRE ===
+    if (client.botType === "GUARD") {
+      if (fullPath.includes("Log Event") || fullPath.includes("Bot Events")) return;
+    }
+
+    const event = require(fullPath);
+    const eventName = path.parse(file).name;
+
+    client.on(eventName, (...args) => event(client, ...args));
+  });
+};
+
+
+
+
+// ================== VOICE ==================
+const joinVoice = (client) => {
+  const channel = client.channels.cache.get(voiceID);
+  if (!channel || channel.type !== 2) return;
+
+  const current = channel.guild.members.me?.voice?.channelId;
+  if (current === channel.id) return;
+
+  joinVoiceChannel({
+    channelId: channel.id,
+    guildId: channel.guild.id,
+    adapterCreator: channel.guild.voiceAdapterCreator,
+  });
+};
+
+// ================== MAIN BOT ==================
+const bot = (global.guard = new Client({
+  intents: INTENTS,
+  partials: [
+    Partials.Message,
+    Partials.Channel,
+    Partials.Reaction,
+    Partials.GuildMember,
+  ],
+  allowedMentions: { parse: ["roles", "users", "everyone"], repliedUser: true },
+}));
+
+bot.botType = "MAIN";
+bot.color = "#2b2d31";
 bot.slash_Cmd = new Collection();
-bot.aliases = new Collection();
-const fs = require("fs")
 
-mongoose.set("strictQuery", true)
-mongoose
-    .connect(mongoURL, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => {
-        bot
-            .login(token)
-            .then(() => {
-                console.success(`Guard (main) botu "${bot.user.tag}" ismiyle aktif edildi.`, `[${moment.utc(time).format("D") + ` ${moons[moment.utc(time).format("MM")]} ` + moment.utc(time).format("YYYY | HH:mm:ss")}]`)
+global.Guards = [];
+global.bots = [];
 
-                let index = 0;
-                for (const token of guards_token) {
-                    const Bot = new Client({ fetchAllMembers: true, allowedMentions: { parse: ["roles", "users", "everyone"], repliedUser: true, }, partials: ["MESSAGE", "CHANNEL", "REACTION"], intents: 32767, });
+// ================== HANDLERS ==================
+require("./Source/Handlers/command-Handler.js");
+require("./Source/Handlers/function-Handler.js");
 
-                    Bot.once("ready", async () => {
-                        global.bots
-                            ?.push(Bot)
-                        Guards
-                            .push(Bot);
+loadEventsRecursive(bot, path.join(__dirname, "Source", "Events"));
 
-                        let descriptionFetch = await Bot.application.fetch()
-                        if (descriptionFetch.description !== config.genel_config.description) {
-                            await Bot.application
-                                .edit({ description: config.genel_config.description })
-                                .catch(() => { })
-                        }
+// ================== DATABASE ==================
+mongoose.set("strictQuery", true);
+mongoose.connect(mongoURL)
+  .then(() => {
+    console.success("MongoDB bağlantısı başarılı.");
+    bot.login(token);
+  })
+  .catch(console.error);
 
-                        const playing = playings[Math.floor(Math.random() * playings.length)];
-                        Bot.user
-                            .setPresence({ activities: [{ name: playing, type: 4 }], status: "idle" })
+// ================== MAIN READY ==================
+bot.once("ready", () => {
+  const time = moment.utc(Date.now() + 3 * 60 * 60 * 1000);
+  console.success(
+    `MAIN AKTİF: ${bot.user.tag}`,
+    `[${time.format("D")} ${moons[time.format("MM")]} ${time.format("YYYY HH:mm:ss")}]`
+  );
 
-                        setInterval(() => {
-                            const playing = playings[Math.floor(Math.random() * playings.length)];
+  bot.channelLogs = {
+    channelLog: bot.channels.cache.get(bots_logs.channelLog),
+    emojiLog: bot.channels.cache.get(bots_logs.emojiLog),
+    banLog: bot.channels.cache.get(bots_logs.banLog),
+    unbanLog: bot.channels.cache.get(bots_logs.unbanLog),
+    joinLog: bot.channels.cache.get(bots_logs.joinLog),
+    leaveLog: bot.channels.cache.get(bots_logs.leaveLog),
+    messageLog: bot.channels.cache.get(bots_logs.messageLog),
+    voiceLog: bot.channels.cache.get(bots_logs.voiceLog),
+    roleLog: bot.channels.cache.get(bots_logs.roleLog),
+  };
 
-                            Bot.user
-                                .setPresence({ activities: [{ name: playing, type: 4 }], status: "idle" })
-                        }, 30000);
 
-                        // === SES KANALINA OTOMATİK GİRİŞ (YARDIMCI GUARD BOT) ===
-                        const channel = Bot.channels.cache.get(voiceChannelIds);
-                        if (!channel || channel.type !== 2) {
-                            console.error('Ses kanalı bulunamadı veya bir ses kanalı değil!');
-                            return;
-                        }
-                        const botMember = channel.guild.members.me;
-                        const currentVoiceId = botMember && botMember.voice && botMember.voice.channelId;
-                        if (currentVoiceId !== channel.id) {
-                            joinVoiceChannel({
-                                channelId: channel.id,
-                                guildId: channel.guild.id,
-                                adapterCreator: channel.guild.voiceAdapterCreator
-                            });
-                            if (currentVoiceId) {
-                                console.log(`Yardımcı Guard bot başka bir ses kanalındaydı (${currentVoiceId}), şimdi ${channel.name} kanalına taşındı.`);
-                            } else {
-                                console.log(`Yardımcı Guard bot ${channel.name} ses kanalına bağlanıldı (veya tekrar girildi).`);
-                            }
-                        } else {
-                            console.log(`Yardımcı Guard bot zaten ${channel.name} ses kanalında.`);
-                        }
-                    });
 
-                    Bot.on('voiceStateUpdate', (oldState, newState) => {
-                        if (newState.id !== Bot.user.id) return;
-                        if (newState.channelId === voiceChannelIds) return;
-                        const c = newState.guild.channels.cache.get(voiceChannelIds);
-                        if (c && c.type === 2) joinVoiceChannel({
-                            channelId: c.id,
-                            guildId: c.guild.id,
-                            adapterCreator: c.guild.voiceAdapterCreator
-                        });
-                    });
+  joinVoice(bot);
 
-                    Bot.login(token)
-                        .then(() => {
-                            index++
-                            console.success(`${index}. Guard (yardımcı) bot "${Bot.user.tag}" ismiyle aktif edildi.`, `[${moment.utc(time).format("D") + ` ${moons[moment.utc(time).format("MM")]} ` + moment.utc(time).format("YYYY | HH:mm:ss")}]`)
+  setInterval(() => {
+    const playing = playings[Math.floor(Math.random() * playings.length)];
+    bot.user.setPresence({
+      activities: [{ name: playing, type: 4 }],
+      status: "idle",
+    });
+  }, 30000);
+});
 
-                            // if (Number(index) == guards_token.length) {
-                            //     fs
-                            //         .readdirSync(`${__dirname}/../../Fivem Bots/`)
-                            //         .filter((file) => file.includes("Ticket System"))
-                            //         .forEach((folder) => fs
-                            //             .readdirSync(`${__dirname}/../../Fivem Bots/${folder}/`)
-                            //             .filter((file) => file.includes("index.js"))
-                            //             .forEach((file) => {
-                            //                 require(`${__dirname}/../../Fivem Bots/${folder}/${file}`);
-                            //             }))
-                            // }
-                        })
-                        .catch((err) => {
-                            console
-                                .error(`Guard (yardımcı) botlarında hata tespit edildi. Lütfen geliştiriciye bu durumu bildirin.`, `[PXDev - Hata]`)
-                            console
-                                .log(err)
-                        });
-                };
+// ================== GUARD BOTS ==================
+let index = 0;
 
-                fs
-                    .readdirSync(`${__dirname}/Source/Handlers/`)
-                    .filter((file) => file.endsWith(".js"))
-                    .forEach((file) => {
-                        require(`${__dirname}/Source/Handlers/${file}`);
-                    });
+for (const gToken of guards_token) {
+  const GuardBot = new Client({
+    intents: INTENTS,
+    partials: [Partials.Message, Partials.Channel, Partials.Reaction],
+    allowedMentions: { parse: ["roles", "users", "everyone"], repliedUser: true },
+  });
 
-                // === SES KANALINA OTOMATİK GİRİŞ (ANA GUARD BOT) ===
-                bot.on('ready', () => {
-                    const channel = bot.channels.cache.get(voiceChannelIds);
-                    if (!channel || channel.type !== 2) { // 2 = GUILD_VOICE
-                        console.error('Ses kanalı bulunamadı veya bir ses kanalı değil!');
-                        return;
-                    }
-                    const botMember = channel.guild.members.me;
-                    const currentVoiceId = botMember && botMember.voice && botMember.voice.channelId;
-                    if (currentVoiceId !== channel.id) {
-                        joinVoiceChannel({
-                            channelId: channel.id,
-                            guildId: channel.guild.id,
-                            adapterCreator: channel.guild.voiceAdapterCreator
-                        });
-                        if (currentVoiceId) {
-                            console.log(`Bot başka bir ses kanalındaydı (${currentVoiceId}), şimdi ${channel.name} kanalına taşındı.`);
-                        } else {
-                            console.log(`${channel.name} ses kanalına bağlanıldı (veya tekrar girildi).`);
-                        }
-                    } else {
-                        console.log(`Bot zaten ${channel.name} ses kanalında.`);
-                    }
-                });
-                bot.on('voiceStateUpdate', (oldState, newState) => {
-                    if (newState.id !== bot.user.id) return;
-                    if (newState.channelId === voiceChannelIds) return;
-                    const c = newState.guild.channels.cache.get(voiceChannelIds);
-                    if (c && c.type === 2) joinVoiceChannel({
-                        channelId: c.id,
-                        guildId: c.guild.id,
-                        adapterCreator: c.guild.voiceAdapterCreator
-                    });
-                });
+  GuardBot.botType = "GUARD";
+  GuardBot.color = "#2b2d31";
 
-                // === SES KANALINA OTOMATİK GİRİŞ (YARDIMCI GUARD BOTLAR) ===
-                // for (const token of guards_token) {
-                //   const Bot = new Client({ fetchAllMembers: true, allowedMentions: { parse: ["roles", "users", "everyone"], repliedUser: true, }, partials: ["MESSAGE", "CHANNEL", "REACTION"], intents: 32767, });
-                //   Bot.once("ready", async () => { ... });
-                //   Bot.on('voiceStateUpdate', ...);
-                // }
-            })
-            .catch((err) => {
-                console
-                    .error(`Guard botunda hata tespit edildi. Lütfen geliştiriciye bu durumu bildirin.`, `[PXDev - Hata]`)
-                console
-                    .log(err)
-            });
+  GuardBot.once("ready", () => {
+    index++;
+    global.Guards.push(GuardBot);
+    global.bots.push(GuardBot);
 
-        console.debug(`DataBase bağlantısı başarılı! Guard (main) bot aktif ediliyor...`, "[GUARD DATABASE]")
-    })
-    .catch((err) => console.log(`[${moment.utc(time).format("D") + ` ${moons[moment.utc(time).format("MM")]} ` + moment.utc(time).format("YYYY | HH:mm:ss")}] [GUARD DATABASE] Failed to login:\n` + err));  
+    GuardBot.channelLogs = {
+      channelLog: GuardBot.channels.cache.get(bots_logs.channelLog),
+      emojiLog: GuardBot.channels.cache.get(bots_logs.emojiLog),
+      banLog: GuardBot.channels.cache.get(bots_logs.banLog),
+      unbanLog: GuardBot.channels.cache.get(bots_logs.unbanLog),
+      joinLog: GuardBot.channels.cache.get(bots_logs.joinLog),
+      leaveLog: GuardBot.channels.cache.get(bots_logs.leaveLog),
+      messageLog: GuardBot.channels.cache.get(bots_logs.messageLog),
+      voiceLog: GuardBot.channels.cache.get(bots_logs.voiceLog),
+      roleLog: GuardBot.channels.cache.get(bots_logs.roleLog),
+    };
+
+    loadEventsRecursive(GuardBot, path.join(__dirname, "Source", "Events"));
+    joinVoice(GuardBot);
+
+    console.success(`${index}. GUARD AKTİF: ${GuardBot.user.tag}`);
+  });
+
+  GuardBot.on("voiceStateUpdate", (_, n) => {
+    if (n.id === GuardBot.user.id && n.channelId !== voiceID) {
+      joinVoice(GuardBot);
+    }
+  });
+
+  GuardBot.login(gToken).catch(console.error);
+}

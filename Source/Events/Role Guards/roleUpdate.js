@@ -5,7 +5,7 @@ const userModel = require("../../Models/userSchema");
 let cooldownBot = new Map();
 const bot = global.guard;
 
-module.exports = async (oldRole, newRole) => {
+module.exports = async (client, oldRole, newRole) => {
   const guild = newRole.guild;
   const entry = await guild
     .fetchAuditLogs({ type: 31 })

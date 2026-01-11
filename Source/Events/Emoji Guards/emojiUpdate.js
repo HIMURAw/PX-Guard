@@ -4,7 +4,7 @@ const guildModel = require("../../Models/guildSchema");
 const userModel = require("../../Models/userSchema");
 const bot = global.guard;
 
-module.exports = async (oldEmoji, newEmoji) => {
+module.exports = async (client, oldEmoji, newEmoji) => {
   const guild = oldEmoji.guild;
   const entry = await guild
     .fetchAuditLogs({ type: 61, limit: 1 })

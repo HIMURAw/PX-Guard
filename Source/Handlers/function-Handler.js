@@ -1,4 +1,4 @@
-const { guard_config: { logChannelWebHook, dailyInfoLogChannelID, punishmentsType }, guard_config, emotes, server_config } = require("../../config.js");
+const { guard_config: { logChannelWebHook, punishmentsType }, guard_config, emotes, server_config, bots_logs: {dailyInfoLogChannelID} } = require("../../config.js");
 const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, Colors, ButtonStyle, escapeBold, WebhookClient } = require("discord.js")
 const { bots_config: { guard_system: { ownersId } }, genel_config, bots_config } = require("../../config.js");
 const config = require("../../config.js");

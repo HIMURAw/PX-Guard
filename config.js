@@ -91,5 +91,18 @@ module.exports = {
             ownersId: ["......................"],
             developersID: ["768372430631731210"],
         },
+    },
+
+    bots_logs: {
+        channelLog: "ID",
+        emojiLog: "ID",
+        banLog: "ID",
+        unbanLog: "ID",
+        joinLog: "ID",
+        leaveLog: "ID",
+        messageLog: "ID",
+        voiceLog: "ID",
+        roleLog: "ID",
+        dailyInfoLogChannelID: "ID",
     }
 }

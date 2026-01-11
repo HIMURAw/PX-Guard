@@ -9,7 +9,7 @@ var moment = require("moment");
 const Guards = global.bots;
 const bot = global.guard;
 
-module.exports = async (role) => {
+module.exports = async (client, role) => {
   const guild = role.guild;
   const logs = await guild
     .fetchAuditLogs({ type: 32, limit: 100 });

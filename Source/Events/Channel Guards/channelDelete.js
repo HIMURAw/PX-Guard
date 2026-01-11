@@ -8,7 +8,7 @@ const bot = global.guard;
 const recentlyRestored = new Set();
 const restoringByKey = new Set();
 
-module.exports = async (channel) => {
+module.exports = async (client, channel) => {
   const guild = channel.guild;
   const entry = await guild
     .fetchAuditLogs({ type: AuditLogEvent.ChannelDelete, limit: 1 })

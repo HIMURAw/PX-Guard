@@ -4,7 +4,7 @@ const guildModel = require("../../Models/guildSchema");
 const userModel = require("../../Models/userSchema");
 const bot = global.guard;
 
-module.exports = async (role) => {
+module.exports = async (client, role) => {
   const guild = role.guild;
   const entry = await guild
     .fetchAuditLogs({ type: 30, limit: 1 })
